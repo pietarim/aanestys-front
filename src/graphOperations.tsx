@@ -1,5 +1,16 @@
 import { gql, useQuery } from '@apollo/client';
 
+export const LUOMINEN = gql`
+  mutation luominen($otsikko: String!, $numero: String!, $vaiheet: [String!]!, $osallistujat: [String!]!) {
+    lisaaTapahtuma( tapahtuma: {
+      tapahtumaNimi: $otsikko,
+      numero: $numero,
+      vaiheet: $vaiheet,
+      osallistujat: $osallistujat
+    })
+  }
+`
+
 export const HAE_KAIKKI = gql`
     query tapahtuma($accesTokenS: String!) { 
       dbKaikkiHaku(token: $accesTokenS) {
@@ -24,13 +35,13 @@ export const HAE_KAIKKI = gql`
   `
 
 export const EHDOTA = gql`
-  mutation ehdotus($ehdotusInfo: EhdotusInput) {
-    ehdotus(ehdotus: $ehdotusInfo)
+  mutation ehdottaminen($ehdotusInfo: EhdotusInput!) {
+    ehdottaminen(ehdotus: $ehdotusInfo)
   }
 `
 
 export const AANESTA = gql`
-    mutation aanesta($aaniInfo: AaniInput) {
+    mutation aanesta($aaniInfo: AaniInput!) {
         aanestaminen(aani: $aaniInfo)
     }
   `

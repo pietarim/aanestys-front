@@ -1,45 +1,36 @@
-import React, {useState} from 'react'
+import {useState} from 'react'
 import { gql, useMutation } from "@apollo/client"
-import { string } from 'yargs'
+import Button from '@material-ui/core/Button';
+import { LUOMINEN } from "./graphOperations"
 
 const Lisaaminen = () => {
 
     const [osallistujat, setOsallistujat] = useState(["","","","",""])
 	const [otsikko, setOtsikko] = useState("")
-    const [ehdotukset, setEhdotukset] = useState(["","","","",""])
+    const [vaiheet, setVaiheet] = useState(["","","","",""])
 	const [numero, setNumero] = useState("")
 
     const LUO_TAPAHTUMA = gql`
         mutation luominen($otsikko: String!, $numero: String!, $osallistujat: [String!]!, $ehdotukset: [String!]!) {
-            tapahtumaLisays(tapahtuma: {
+            lisaaTapahtuma(tapahtuma: {
                 otsikko: $otsikko,
 				numero: $numero,
                 osallistujat: $osallistujat
                 ehdotukset: $ehdotukset
-            }) {
-                otsikko
-            }
+            })
         }
     `
 
-    /* interface ehdotukset{
-        otsikko: string
-        aanet: string[]
-    } */
-
 	const Lisaaminen = async () => {
 		console.log("Lisaaminen polkastu käyntiin")
-		/* setOsallistujat(["","","","",""])
-		setOtsikko("")
-		setEhdotukset(["","","","",""]) */
 		const tallennettu = await muokkaa()
 		console.log(tallennettu)
 	}
 
     const [muokkaa, {data, loading, error}] = useMutation<
-    {tapahtumaLisays: {otsikko: string, osallistujat: string[], ehdotukset: string[] }},
-	{otsikko: string, osallistujat: string[], ehdotukset: string[]}
-    >(LUO_TAPAHTUMA, {variables: {otsikko, osallistujat, ehdotukset}})
+    {viesti: string},
+	{otsikko: string, numero: string, vaiheet: string[], osallistujat: string[]}
+    >(LUOMINEN, {variables: {otsikko, numero, vaiheet, osallistujat}})
 
 	const Palaute = () => {
 		if (data) {
@@ -62,7 +53,7 @@ const Lisaaminen = () => {
 			)
 		} 
 			return(
-					<p>ei mitään</p>
+					null
 			)
 	}
 
@@ -71,7 +62,7 @@ const Lisaaminen = () => {
         <>
 			<Palaute />
             <h1>Tapahtuman lisääminen</h1>
-            <label>
+            <label style={{"display": "block"}}>
 				Otsikko:
 				<input
 					value={otsikko}
@@ -81,7 +72,7 @@ const Lisaaminen = () => {
 				/>
 			</label>
 			<label>
-				Puhelin:
+				Puhelin (alkaa 358):
 				<input
 					value={numero}
 					onChange={(e) =>{
@@ -99,18 +90,10 @@ const Lisaaminen = () => {
 								value={n} 
 								onChange={(e) =>{
 								let jono = osallistujat
-								console.log(e.target.value)
-								console.log(jono[i])
-								console.log(jono)
-								console.log(i)
 								let value = e.target.value
 								jono[i] = value
 								setOsallistujat([...jono])
 								console.log(jono)
-								/* setOsallistujat(draft => {
-									draft[i] = e.target.value
-								}) */
-								//setOsallistujat([...jono])
 							}}
 							/>
 						</label>
@@ -118,39 +101,25 @@ const Lisaaminen = () => {
 				)
 			})}
             <h2>Ehdotukset</h2>
-            {ehdotukset.map((n, i) => {
+            {vaiheet.map((n, i) => {
 				return (
 					<div key={i}>
 						<label>
-							osallistuja:
+							Vaihe:
 							<input
 								value={n} 
 								onChange={(e) =>{
-								let jono = ehdotukset
-								console.log(e.target.value)
-								console.log(jono[i])
-								console.log(jono)
-								console.log(i)
+								let jono = vaiheet
 								let value = e.target.value
 								jono[i] = value
-								setEhdotukset([...jono])
-								console.log(jono)
-								/* jono[i] = e.target.value
-								console.log(jono) */
-								/* jono[i] = e.target.value */
-								/* setOsallistujat([...jono]) */
-								/* osallistujat */
-								/* setOsallistujat(draft => {
-									draft[i] = e.target.value
-								}) */
-								//setOsallistujat([...jono])
+								setVaiheet([...jono])
 							}}
 							/>
 						</label>
 					</div>
 				)
 			})}
-            <button onClick={Lisaaminen}>luo tapahtuma</button>
+            <Button variant="contained" onClick={Lisaaminen}>luo tapahtuma</Button>
         </>
     )
 }
