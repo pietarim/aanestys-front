@@ -1,13 +1,17 @@
-import { useState, useRef, useEffect } from 'react';
+import { useState, useRef, useEffect } from 'react'
+import Grid from '@mui/material/Grid'
 import Lisaaminen from './Lisaaminen'
 import Typography from '@material-ui/core/Typography'
-import MuiAlert/* , { AlertProps } */ from '@material-ui/lab/Alert';
-import Button from '@material-ui/core/Button';
+import MuiAlert/* , { AlertProps } */ from '@material-ui/lab/Alert'
+import Button from '@material-ui/core/Button'
 import axios from 'axios'
-import { HAE_KAIKKI, AANESTA, EHDOTA } from './graphOperations';
+import Chip from '@mui/material/Chip'
+import Container from '@mui/material/Container'
+import { HAE_KAIKKI, AANESTA, EHDOTA } from './graphOperations'
 import { Vaiheet } from "./komponentit/Vaiheet"
-import './App.css';
-import { useQuery, useMutation } from '@apollo/client';
+import './App.css'
+import Paper from '@mui/material/Paper'
+import { useQuery, useMutation } from '@apollo/client'
 
 
 function App() {
@@ -22,18 +26,18 @@ function App() {
 
   const nimi = localStorage.getItem("nimi")
 
-  const queryParams = new URLSearchParams(window.location.search);
+  const queryParams = new URLSearchParams(window.location.search)
   const kayttajaT = queryParams.get("k")
   const tapahtumaT = queryParams.get("t")
 
   const getAccesToken = async () => {
-    const data = await axios.get("http://localhost:3001/accesToken", {withCredentials: true})
+    const data = await axios.get("http://localhost:3001/accesToken", { withCredentials: true })
     setAccesTokenS(data.data)
   }
 
   const expressKirajutuminen = async () => {
     const data = await axios.post("http://localhost:3001/kirjautuminen",
-     {osallistujaSalasana: kayttajaT, tapahtumaSalasana: tapahtumaT}, {withCredentials: true})
+      { osallistujaSalasana: kayttajaT, tapahtumaSalasana: tapahtumaT }, { withCredentials: true })
     setAccesTokenS(data.data.token)
     const nimiD = data.data.nimi
     const kayttajaIdD = data.data._id
@@ -55,7 +59,7 @@ function App() {
   }, [])
 
   useEffect(() => {
-    if ( !kirjautunut2.current && kayttajaT && tapahtumaT ) {
+    if (!kirjautunut2.current && kayttajaT && tapahtumaT) {
       expressKirajutuminen()
     } else if (kirjautunut2.current) {
       getAccesToken()
@@ -71,7 +75,7 @@ function App() {
     if (kayttajaId) {
       setKayttajaId(kayttajaId)
     }
-  })
+  }, [])
 
   async function kirjauduUlos() {
     localStorage.removeItem("nimi")
@@ -79,78 +83,12 @@ function App() {
     setAccesTokenS("")
     setKayttajaId("")
 
-    const tulos = await axios.get("http://localhost:3001/removeCookie", {withCredentials: true})
-  }
-  
-
-  interface AaniInput {
-    token: string,
-    osallistujaId: string,
-    vaiheId: string
-    ehdotusId: string
-    tapahtumaId: string
-  }
-
-  interface EhdotusInput {
-    token: string
-    ehdotus: string
-    ehdottajaId: string
-    vaiheId: string
-  }
-
-  interface aaniTargetValue {
-    vaiheId: string
-    ehdotusId: string
-    tapahtumaId: string
-  }
-
-  interface EhdotusInput {
-    token: string
-    ehdotus: string
-    ehdottajaId: string
-    vaiheId: string
-  }
-
-  interface ehdotusTargetValue {
-    ehdotus: string
-    vaiheId: string
-  }
-
-  function aanesta(value: aaniTargetValue) {
-    setAanestetty(true)
-    const [aanestys, {error, data }] = useMutation<
-    { viesti: String },
-    { aaniInfo: AaniInput }
-    >(AANESTA, {
-      variables: { aaniInfo: { 
-        token: accesTokenS, 
-        osallistujaId: kayttajaId, 
-        vaiheId: value.vaiheId, 
-        ehdotusId: value.ehdotusId, 
-        tapahtumaId: value.tapahtumaId } }
-    })
-    setTimeout(() => {setAanestetty(false)},1500)
-  }
-
-  function ehdota(value: ehdotusTargetValue) {
-    const [ehdotus, {error, data}] = useMutation<
-    {viesti: String},
-    {ehdotusInfo: EhdotusInput}>(EHDOTA, {
-      variables: { ehdotusInfo: {
-        token: accesTokenS,
-        ehdotus: value.ehdotus,
-        ehdottajaId: kayttajaId,
-        vaiheId: value.vaiheId
-      }}
-    })
-    setLisatty(true)
-
-    setTimeout(() => {setLisatty(false)}, 1500)
+    const tulos = await axios.get("http://localhost:3001/removeCookie", { withCredentials: true })
   }
 
   const HaeKaikki = () => {
-    console.log("HaeKaikki accesToken ",accesTokenS)
-    const { loading, error, data } = useQuery(HAE_KAIKKI, {variables: {accesTokenS}})
+    console.log("HaeKaikki accesToken ", accesTokenS)
+    const { loading, error, data } = useQuery(HAE_KAIKKI, { variables: { accesTokenS } })
     console.log("HAE KAIKKI ON KÄYNNISSÄ")
     if (loading) {
       return (
@@ -163,8 +101,8 @@ function App() {
 
       const Notification = () => {
         if (aanestetty) {
-          return(
-              <MuiAlert elevation={6} variant="filled" severity="success" style={{ width: "150px", margin: "auto" }}>Ääni lisätty</MuiAlert>
+          return (
+            <MuiAlert elevation={6} variant="filled" severity="success" style={{ width: "150px", margin: "auto" }}>Ääni lisätty</MuiAlert>
           )
         } else if (lisatty) {
           return (
@@ -181,44 +119,75 @@ function App() {
         }
       }
 
+      const Ylapalkki = () => {
+        let leveys = window.innerWidth
+        if (leveys < 600) {
+          return (
+            <div id="palkki" style={{ display: "block" }} >
+              {esitettavaNimi ? <Chip label={`${esitettavaNimi} kirjautunut sisään`} color="primary" /> : null}
+              <Typography /* style={{ display: "inline" }} */ variant="h3" component="h2">{tieto.otsikko}</Typography>
+              <Button variant="contained" onClick={() => kirjauduUlos()}>kirjaudu ulos</Button>
+            </div>
+          )
+        } else if (leveys > 599) {
+          return (
+            <div id="palkki" style={{ width: "100%", display: "flex", justifyContent: "space-between", marginBottom: "24px" }}>
+              {esitettavaNimi ? <Chip label={`${esitettavaNimi} kirjautunut sisään`} color="primary" /> : null}
+              <Typography /* style={{ display: "inline" }} */ variant="h3" component="h2">{tieto.otsikko}</Typography>
+              <Button variant="contained" onClick={() => kirjauduUlos()}>kirjaudu ulos</Button>
+            </div>
+          )
+        } else { return null }
+
+      }
 
       let osallistujat: any = []
       return (
         <>
-          {esitettavaNimi ? <p>{esitettavaNimi} kirjautunut sisään</p> : null}
-          <Typography gutterBottom variant="h3" component="h2">{tieto.otsikko}</Typography>
-          <Notification />
-          {tieto.vaiheet.map((n: any) => 
-            <Vaiheet
-              key={n._id}
-              id={n._id} n={n} 
-              accesTokenS={accesTokenS} 
-              kayttajaId={kayttajaId} 
-              setAanestetty={setAanestetty} 
-              setLisatty={setLisatty} 
-              setEhdotusMax={setEhdotusMax} 
-            />
-          )}
+          <Ylapalkki />
+          {/* <div id="palkki">
+            {esitettavaNimi ? <Chip label={`${esitettavaNimi} kirjautunut sisään`} color="primary" /> : null}
+            <Typography variant="h3" component="h2">{tieto.otsikko}</Typography>
+            <Button variant="contained" onClick={() => kirjauduUlos()}>kirjaudu ulos</Button>
+          </div> */}
+          <Container component="main" maxWidth="md" sx={{ pb: 4, px: 0, mt: 1 }}>
+            <Paper style={{ backgroundColor: "#bbdefb" }} variant="outlined" sx={{ pb: 4, mt: { sm: 1 } }}>
+              {/* <Grid container spacing={3}> */}
+              <Notification />
+              {tieto.vaiheet.map((n: any) =>
+                <Vaiheet
+                  key={n._id}
+                  id={n._id} n={n}
+                  accesTokenS={accesTokenS}
+                  kayttajaId={kayttajaId}
+                  setAanestetty={setAanestetty}
+                  setLisatty={setLisatty}
+                  setEhdotusMax={setEhdotusMax}
+                />
+              )}
+              {/* </Grid> */}
+            </Paper>
+          </Container>
           <Typography gutterBottom variant="h4" component="h3">Osallistujat</Typography>
           <div>
-            {tieto.osallistujat.map((n: any) => 
+            {tieto.osallistujat.map((n: any) =>
               <p key={n._id}>{n.nimi}</p>
             )}
           </div>
-          
         </>
       )
     } else {
+      kirjauduUlos()
       return (<p>ei toimi</p>)
     }
   }
 
   return (
     <div className="App">
-      <Button variant="contained" onClick={() => kirjauduUlos()}>kirjaudu ulos</Button>
-      {accesTokenS ? <HaeKaikki /> : <Lisaaminen /> }
+
+      {accesTokenS ? <HaeKaikki /> : <Lisaaminen />}
     </div>
-  );
+  )
 }
 
-export default App;
+export default App

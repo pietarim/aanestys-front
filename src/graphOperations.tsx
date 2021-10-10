@@ -46,7 +46,7 @@ export const AANESTA = gql`
     }
   `
 
-  const SAVE_ROCKET = gql`
+const SAVE_ROCKET = gql`
   mutation saveRocket($rocket: RocketInput!) {
     saveRocket(rocket: $rocket)
   }

@@ -1,16 +1,20 @@
-import {useState} from 'react'
+import { useState } from 'react'
 import { gql, useMutation } from "@apollo/client"
-import Button from '@material-ui/core/Button';
+import Grid from '@mui/material/Grid'
+import TextField from '@mui/material/TextField'
+import Container from '@mui/material/Container'
+import Paper from '@mui/material/Paper'
+import Button from '@material-ui/core/Button'
 import { LUOMINEN } from "./graphOperations"
 
 const Lisaaminen = () => {
 
-    const [osallistujat, setOsallistujat] = useState(["","","","",""])
-	const [otsikko, setOtsikko] = useState("")
-    const [vaiheet, setVaiheet] = useState(["","","","",""])
-	const [numero, setNumero] = useState("")
+  const [osallistujat, setOsallistujat] = useState(["", "", "", "", ""])
+  const [otsikko, setOtsikko] = useState("")
+  const [vaiheet, setVaiheet] = useState(["", "", "", "", ""])
+  const [numero, setNumero] = useState("")
 
-    const LUO_TAPAHTUMA = gql`
+  const LUO_TAPAHTUMA = gql`
         mutation luominen($otsikko: String!, $numero: String!, $osallistujat: [String!]!, $ehdotukset: [String!]!) {
             lisaaTapahtuma(tapahtuma: {
                 otsikko: $otsikko,
@@ -21,107 +25,113 @@ const Lisaaminen = () => {
         }
     `
 
-	const Lisaaminen = async () => {
-		console.log("Lisaaminen polkastu käyntiin")
-		const tallennettu = await muokkaa()
-		console.log(tallennettu)
-	}
+  const Lisaaminen = async () => {
+    console.log("Lisaaminen polkastu käyntiin")
+    const tallennettu = await muokkaa()
+    console.log(tallennettu)
+  }
 
-    const [muokkaa, {data, loading, error}] = useMutation<
-    {viesti: string},
-	{otsikko: string, numero: string, vaiheet: string[], osallistujat: string[]}
-    >(LUOMINEN, {variables: {otsikko, numero, vaiheet, osallistujat}})
+  const [muokkaa, { data, loading, error }] = useMutation<
+    { viesti: string },
+    { otsikko: string, numero: string, vaiheet: string[], osallistujat: string[] }
+  >(LUOMINEN, { variables: { otsikko, numero, vaiheet, osallistujat } })
 
-	const Palaute = () => {
-		if (data) {
-			return (
-				<>
-					<p>lisääminen suoritettu</p>
-				</>
-			)}
-		if (loading) {
-			return (
-				<>
-					<p>lataa...</p>
-				</>
-			)}
-		if (error) {
-			return (
-				<>
-					<p>joku meni pieleen</p>
-				</>
-			)
-		} 
-			return(
-					null
-			)
-	}
-
-
-    return(
-        <>
-			<Palaute />
-            <h1>Tapahtuman lisääminen</h1>
-            <label style={{"display": "block"}}>
-				Otsikko:
-				<input
-					value={otsikko}
-					onChange={(e) =>{
-						setOtsikko(e.target.value)
-					} }
-				/>
-			</label>
-			<label>
-				Puhelin (alkaa 358):
-				<input
-					value={numero}
-					onChange={(e) =>{
-						setNumero(e.target.value)
-					}}
-				/>
-			</label>
-            <h2>Osallistujat</h2>
-            {osallistujat.map((n, i) => {
-				return (
-					<div key={i}>
-						<label>
-							osallistuja:
-							<input
-								value={n} 
-								onChange={(e) =>{
-								let jono = osallistujat
-								let value = e.target.value
-								jono[i] = value
-								setOsallistujat([...jono])
-								console.log(jono)
-							}}
-							/>
-						</label>
-					</div>
-				)
-			})}
-            <h2>Ehdotukset</h2>
-            {vaiheet.map((n, i) => {
-				return (
-					<div key={i}>
-						<label>
-							Vaihe:
-							<input
-								value={n} 
-								onChange={(e) =>{
-								let jono = vaiheet
-								let value = e.target.value
-								jono[i] = value
-								setVaiheet([...jono])
-							}}
-							/>
-						</label>
-					</div>
-				)
-			})}
-            <Button variant="contained" onClick={Lisaaminen}>luo tapahtuma</Button>
-        </>
+  const Palaute = () => {
+    if (data) {
+      return (
+        <p>lisääminen suoritettu</p>
+      )
+    }
+    if (loading) {
+      return (
+        <p>lataa...</p>
+      )
+    }
+    if (error) {
+      return (
+        <p>joku meni pieleen</p>
+      )
+    }
+    return (
+      null
     )
+  }
+
+
+  return (
+    <>
+      <Palaute />
+      <Container component="main" maxWidth="sm" sx={{ mb: 4 }}>
+        <Paper variant="outlined" sx={{ my: { xs: 3, md: 6 }, p: { xs: 3, md: 3 }, mx: { xs: 0.5 } }}>
+          <h1>Tapahtuman lisääminen</h1>
+          <Grid container spacing={3}>
+            <Grid item xs={12} sm={6}>
+              <TextField
+                fullWidth
+                label="Tapahtuman nimi"
+                value={otsikko}
+                onChange={(e) => {
+                  setOtsikko(e.target.value)
+                }}
+              />
+            </Grid>
+            <Grid item xs={12} sm={6}>
+              <TextField
+                fullWidth
+                label="Puhelin (mudossa 3581111111)"
+                value={numero}
+                onChange={(e) => {
+                  setNumero(e.target.value)
+                }}
+              />
+            </Grid>
+          </Grid>
+          <h2>Osallistujat</h2>
+          <Grid container spacing={3}>
+            {osallistujat.map((n, i) => {
+              return (
+                <Grid key={i} item xs={12} sm={6}>
+                  <TextField
+                    label="osallistuja"
+                    value={n}
+                    fullWidth
+                    onChange={(e) => {
+                      let jono = osallistujat
+                      let value = e.target.value
+                      jono[i] = value
+                      setOsallistujat([...jono])
+                      console.log(jono)
+                    }}
+                  />
+                </Grid>
+              )
+            })}
+          </Grid>
+          <h2>Vaiheet</h2>
+          <Grid container spacing={3}>
+            {vaiheet.map((n, i) => {
+              return (
+                <Grid key={i} item xs={12} sm={6}>
+                  <TextField
+                    label={`Vaihe ${i + 1}`}
+                    value={n}
+                    fullWidth
+                    onChange={(e) => {
+                      let jono = vaiheet
+                      let value = e.target.value
+                      jono[i] = value
+                      setVaiheet([...jono])
+                    }}
+                  />
+                </Grid>
+              )
+            })}
+          </Grid>
+          <Button style={{ marginTop: "32px" }} variant="contained" onClick={Lisaaminen}>luo tapahtuma</Button>
+        </Paper>
+      </Container>
+    </>
+  )
 }
 
 export default Lisaaminen
