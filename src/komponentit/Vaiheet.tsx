@@ -97,19 +97,6 @@ export const Vaiheet = ({
     setTimeout(() => { setAanestetty(false) }, 1500)
   }
 
-  /* const kasitteleEhdotusMuutos = (e: React.FormEvent<HTMLInputElement>) => {
-    setEhdotusValue(e.currentTarget.value)
-  } */
-
-  /* const theme = createTheme({
-    palette: {
-      primary: {
-        main: "#ffffff"
-      },
-      background: "#ffffff",
-    },
-  }) */
-
   const useStyles = makeStyles({
 
   })
@@ -120,7 +107,11 @@ export const Vaiheet = ({
       <div >
         {n.ehdotukset.map((m: any, index: number) =>
           <div key={m._id} style={{ display: "block" }}>
-            <p style={{ display: "inline-block" }} key={m._id}><b>{m.ehdotus}</b> äänet: {Object.values(m.aanet).length}</p>
+            <p
+              style={{ display: "inline-block" }}
+              key={m._id}>
+              <b>{m.ehdotus}</b> äänet: {Object.values(m.aanet).length}
+            </p>
             <AanestaButton
               key={index}
               id={id}
@@ -133,15 +124,12 @@ export const Vaiheet = ({
           </div>
         )}
       </div>
-      {/* <ThemeProvider theme={theme}> */}
       <TextField
         style={{ backgroundColor: "#ffffff", borderRadius: "4px" }}
-        /* color="main" */
         value={ehdotusValue}
         label="lisää ehdotus"
         onChange={(e) => { setEhdotusValue(e.target.value) }}
       />
-      {/* </ThemeProvider> */}
       <Button variant="contained" onClick={() => ehdottaminen()}>
         Lähetä
       </Button>

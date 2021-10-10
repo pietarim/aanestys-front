@@ -1,5 +1,6 @@
 import { useState } from 'react'
-import { gql, useMutation } from "@apollo/client"
+import MuiAlert from '@material-ui/lab/Alert'
+import { useMutation } from "@apollo/client"
 import Grid from '@mui/material/Grid'
 import TextField from '@mui/material/TextField'
 import Container from '@mui/material/Container'
@@ -13,17 +14,6 @@ const Lisaaminen = () => {
   const [otsikko, setOtsikko] = useState("")
   const [vaiheet, setVaiheet] = useState(["", "", "", "", ""])
   const [numero, setNumero] = useState("")
-
-  const LUO_TAPAHTUMA = gql`
-        mutation luominen($otsikko: String!, $numero: String!, $osallistujat: [String!]!, $ehdotukset: [String!]!) {
-            lisaaTapahtuma(tapahtuma: {
-                otsikko: $otsikko,
-				numero: $numero,
-                osallistujat: $osallistujat
-                ehdotukset: $ehdotukset
-            })
-        }
-    `
 
   const Lisaaminen = async () => {
     console.log("Lisaaminen polkastu käyntiin")
@@ -39,7 +29,13 @@ const Lisaaminen = () => {
   const Palaute = () => {
     if (data) {
       return (
-        <p>lisääminen suoritettu</p>
+        <MuiAlert
+          elevation={6}
+          variant="filled"
+          severity="success"
+          style={{ position: "absolute", top: "30%", left: "50%", transform: "translateX(-50%)" }}>
+          Lisääminen suoritettu. Kirjaudu tapahtumaan tekstiviestin linkillä.
+        </MuiAlert>
       )
     }
     if (loading) {
