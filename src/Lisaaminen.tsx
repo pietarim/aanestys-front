@@ -1,4 +1,5 @@
 import { useState } from 'react'
+import { produce } from "immer"
 import MuiAlert from '@material-ui/lab/Alert'
 import { useMutation } from "@apollo/client"
 import Grid from '@mui/material/Grid'
@@ -26,6 +27,44 @@ const Lisaaminen = () => {
     { otsikko: string, numero: string, vaiheet: string[], osallistujat: string[] }
   >(LUOMINEN, { variables: { otsikko, numero, vaiheet, osallistujat } })
 
+  const PoistaRivi = () => {
+    if (osallistujat.length > 5) {
+      return (
+        <Button onClick={() => rivinPoistaminen()} >Poista rivi</Button>
+      )
+    } else {
+      return null
+    }
+  }
+
+  const PoistaVaiRivi = () => {
+    if (vaiheet.length > 5) {
+      return (
+        <Button onClick={() => vaiheRiviPoistaminen()} >Poista rivi</Button>
+      )
+    } else {
+      return null
+    }
+  }
+
+  function rivinPoistaminen() {
+    const index = osallistujat.length - 1
+    let textFieldArr: Array<string> = []
+    for (let i = 0; i < index; i++) {
+      textFieldArr = [...textFieldArr, osallistujat[i]]
+    }
+    setOsallistujat(textFieldArr)
+  }
+
+  function vaiheRiviPoistaminen() {
+    const index = vaiheet.length - 1
+    let textFieldArr: Array<string> = []
+    for (let i = 0; i < index; i++) {
+      textFieldArr = [...textFieldArr, vaiheet[i]]
+    }
+    setVaiheet(textFieldArr)
+  }
+
   const Palaute = () => {
     if (data) {
       return (
@@ -52,7 +91,6 @@ const Lisaaminen = () => {
       null
     )
   }
-
 
   return (
     <>
@@ -102,6 +140,12 @@ const Lisaaminen = () => {
                 </Grid>
               )
             })}
+            <Button style={{ paddingLeft: "24px" }} onClick={() => {
+              setOsallistujat([...osallistujat, ""])
+            }}>
+              Lisaa rivi
+            </Button>
+            <PoistaRivi />
           </Grid>
           <h2>Vaiheet</h2>
           <Grid container spacing={3}>
@@ -122,6 +166,12 @@ const Lisaaminen = () => {
                 </Grid>
               )
             })}
+            <Button style={{ paddingLeft: "24px" }} onClick={() => {
+              setVaiheet([...vaiheet, ""])
+            }}>
+              Lisaa rivi
+            </Button>
+            <PoistaVaiRivi />
           </Grid>
           <Button style={{ marginTop: "32px" }} variant="contained" onClick={Lisaaminen}>luo tapahtuma</Button>
         </Paper>

@@ -1,14 +1,9 @@
 import { useState } from "react"
 import Button from '@material-ui/core/Button'
 import TextField from '@mui/material/TextField'
-import Paper from '@mui/material/Paper'
-import { HAE_KAIKKI, AANESTA, EHDOTA } from '../graphOperations'
-import { useQuery, useMutation } from '@apollo/client'
+import { EHDOTA } from '../graphOperations'
+import { useMutation } from '@apollo/client'
 import { AanestaButton } from "./AanestaButton"
-import { createTheme, ThemeProvider, styled } from '@mui/material/styles'
-import Container from '@mui/material/Container'
-import blue from '@mui/material/colors/blue'
-import { makeStyles } from '@material-ui/core/styles'
 
 interface Props {
   id: string,
@@ -31,12 +26,11 @@ export const Vaiheet = ({
 }: Props) => {
   const [ehdotusValue, setEhdotusValue] = useState<string>("")
 
-  interface AaniInput {
-    token: string,
-    osallistujaId: string,
+  interface EhdotusInput {
+    token: string
+    ehdotus: string
+    ehdottajaId: string
     vaiheId: string
-    ehdotusId: string
-    tapahtumaId: string
   }
 
   interface EhdotusInput {
@@ -46,21 +40,7 @@ export const Vaiheet = ({
     vaiheId: string
   }
 
-  interface aaniTargetValue {
-    vaiheId: string
-    ehdotusId: string
-    tapahtumaId: string
-  }
-
-  interface EhdotusInput {
-    token: string
-    ehdotus: string
-    ehdottajaId: string
-    vaiheId: string
-  }
-
-
-  const [ehdottaminen, { error, data, loading }] = useMutation<
+  const [ehdottaminen, { error, data }] = useMutation<
     { ehdottaminen: String },
     { ehdotusInfo: EhdotusInput }>(EHDOTA, {
       variables: {
@@ -73,10 +53,7 @@ export const Vaiheet = ({
       }
     })
   /* ehdottaminen() */
-  console.log("mutaatio on käynnissä")
-  if (loading) {
-    console.log("ladataan")
-  } else if (data) {
+  if (data) {
     if (data.ehdottaminen == "max") {
       setEhdotusMax(true)
       setTimeout(() => { setEhdotusMax(false) }, 3500)
@@ -87,19 +64,6 @@ export const Vaiheet = ({
   } else if (error) {
     console.log(error)
   }
-
-
-
-  function lahetaEhdotus() {
-    console.log("ehdotus käynnistyy")
-    setEhdotusValue("")
-    setLisatty(true)
-    setTimeout(() => { setAanestetty(false) }, 1500)
-  }
-
-  const useStyles = makeStyles({
-
-  })
 
   return (
     <div key={id}>
