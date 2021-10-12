@@ -7,9 +7,10 @@ import {
   InMemoryCache,
   ApolloProvider,
 } from "@apollo/client"
+import { gqlUri } from "./config"
 
 const client = new ApolloClient({
-  uri: 'http://localhost:4000/graphql',
+  uri: `${gqlUri}`,
   cache: new InMemoryCache()
 })
 
