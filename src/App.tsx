@@ -83,9 +83,7 @@ function App() {
   }
 
   const HaeKaikki = () => {
-    console.log("HaeKaikki accesToken ", accesTokenS)
     const { loading, error, data } = useQuery(HAE_KAIKKI, { variables: { accesTokenS } })
-    console.log("HAE KAIKKI ON KÄYNNISSÄ")
     if (loading) {
       return (
         <div>

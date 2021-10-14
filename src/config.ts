@@ -1,2 +1,2 @@
-export const url = "https://aanestajaehdota.com/:3002"
-export const gqlUri = "https://aanestajaehdota.com/:4000/graphql"
+export const url = "osoite_tähän/api"
+export const gqlUri = "osoite_tähän/graphql"

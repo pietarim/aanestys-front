@@ -17,9 +17,7 @@ const Lisaaminen = () => {
   const [numero, setNumero] = useState("")
 
   const Lisaaminen = async () => {
-    console.log("Lisaaminen polkastu käyntiin")
     const tallennettu = await muokkaa()
-    console.log(tallennettu)
   }
 
   const [muokkaa, { data, loading, error }] = useMutation<
@@ -134,7 +132,6 @@ const Lisaaminen = () => {
                       let value = e.target.value
                       jono[i] = value
                       setOsallistujat([...jono])
-                      console.log(jono)
                     }}
                   />
                 </Grid>

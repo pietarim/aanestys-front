@@ -36,8 +36,6 @@ export const AanestaButton = ({
   })
   if (error) {
     console.log("epännistuminen")
-  } else if (loading) {
-    console.log("lataaminen käynnisäs")
   } else if (data) {
     setAanestetty(true)
     setTimeout(() => { setAanestetty(false) }, 1500)
