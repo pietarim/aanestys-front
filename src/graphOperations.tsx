@@ -1,4 +1,4 @@
-import { gql, useQuery } from '@apollo/client';
+import { gql } from '@apollo/client'
 
 export const LUOMINEN = gql`
   mutation luominen($otsikko: String!, $numero: String!, $vaiheet: [String!]!, $osallistujat: [String!]!) {
@@ -45,9 +45,3 @@ export const AANESTA = gql`
         aanestaminen(aani: $aaniInfo)
     }
   `
-
-const SAVE_ROCKET = gql`
-  mutation saveRocket($rocket: RocketInput!) {
-    saveRocket(rocket: $rocket)
-  }
-`
